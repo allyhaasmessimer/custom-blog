@@ -16,6 +16,7 @@ const secret = "fdfdgfdsbt65765ryryvggh";
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
 app.use(cookieParser());
+app.use("/uploads", express.static(__dirname + "/uploads"));
 
 mongoose.connect(
     "mongodb+srv://allyhaas:m1KUtCLOMnzLEPlr@cluster0.teklxhx.mongodb.net/"
@@ -113,7 +114,12 @@ app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
 
 app.get("/post", async (req, res) => {
     // const posts = await Post.find().populate('User');
-    res.json(await Post.find().populate("author", ["username"]));
+    res.json(
+        await Post.find()
+            .populate("author", ["username"])
+            .sort({ createdAt: -1 })
+            .limit(20)
+    );
 });
 
 app.listen(4000, () => {
