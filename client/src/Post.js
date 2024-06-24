@@ -1,4 +1,13 @@
-export default function Post() {
+import { format } from "date-fns";
+
+export default function Post({
+    title,
+    summary,
+    cover,
+    content,
+    createdAt,
+    author,
+}) {
     return (
         <div className="post">
             <div className="image">
@@ -8,17 +17,14 @@ export default function Post() {
                 />
             </div>
             <div className="texts">
-                <h2>Lorem Ipsum Dolor Sit Amet</h2>
+                <h2>{title}</h2>
                 <p className="info">
-                    <span className="author">Liesel</span>
-                    <time dateTime="">2024-06-20</time>
+                    <span className="author">{author?.username}</span>
+                    <time dateTime="">
+                        {format(new Date(createdAt), "MMM d, yyyy")}
+                    </time>
                 </p>
-                <p className="summary">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Quisque malesuada pellentesque dolor, vitae facilisis eros
-                    tempor id. Sed vitae odio eu metus tincidunt convallis non
-                    at magna.
-                </p>
+                <p className="summary">{summary}</p>
             </div>
         </div>
     );
