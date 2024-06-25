@@ -133,6 +133,27 @@ app.put("/post", uploadMiddleware.single("file"), async (req, res) => {
     });
 });
 
+// Delete post endpoint
+app.delete("/post/:id", async (req, res) => {
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+        if (err) return res.status(401).json("Invalid token");
+
+        const { id } = req.params;
+        const postDoc = await Post.findById(id);
+
+        if (!postDoc) return res.status(404).json("Post not found");
+
+        const isAuthor = postDoc.author.toString() === info.id.toString();
+        if (!isAuthor) {
+            return res.status(400).json("You are not the author");
+        }
+
+        await Post.findByIdAndDelete(id);
+        res.json("Post deleted");
+    });
+});
+
 app.get("/post", async (req, res) => {
     const posts = await Post.find()
         .populate("author", ["username"])
