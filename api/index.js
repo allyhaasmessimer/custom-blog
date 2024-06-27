@@ -5,29 +5,33 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
-const fs = require("fs");
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 require("dotenv").config();
 
 const User = require("./models/User");
 const Post = require("./models/Post");
 
 const app = express();
-const uploadMiddleware = multer({ dest: "uploads/" });
+const upload = multer(); // No dest, since we don't want to save locally
 const salt = bcrypt.genSaltSync(10);
 const secret = "fdfdgfdsbt65765ryryvggh";
+
+const s3Client = new S3Client({
+    region: "us-east-1", // Change to your preferred region
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    },
+});
 
 // Middleware
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
 app.use(cookieParser());
-app.use("/uploads", express.static(__dirname + "/uploads"));
 
 // Database connection
 mongoose
-    .connect(process.env.MONGODB_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    })
+    .connect(process.env.MONGODB_URI)
     .then(() => console.log("MongoDB connected"))
     .catch((err) => console.error("MongoDB connection error:", err));
 
@@ -85,52 +89,98 @@ app.post("/logout", (req, res) => {
     res.cookie("token", "").json("ok");
 });
 
-app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
-    const { originalname, path } = req.file;
+app.post("/post", upload.single("file"), async (req, res) => {
+    const { originalname, buffer } = req.file;
     const ext = originalname.split(".").pop();
-    const newPath = `${path}.${ext}`;
-    fs.renameSync(path, newPath);
 
-    const { token } = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) => {
-        if (err) throw err;
-        const { title, summary, content } = req.body;
-        const postDoc = await Post.create({
-            title,
-            summary,
-            content,
-            cover: newPath,
-            author: info.id,
+    // Set up S3 upload parameters
+    const params = {
+        Bucket: "bookofally-media",
+        Key: `${Date.now()}_${originalname}`,
+        Body: buffer,
+    };
+
+    try {
+        // Uploading files to the bucket
+        const data = await s3Client.send(new PutObjectCommand(params));
+        console.log(`File uploaded successfully. ${data.Location}`);
+
+        // File uploaded successfully, save the URL to your database
+        const { token } = req.cookies;
+        jwt.verify(token, secret, {}, async (err, info) => {
+            if (err) throw err;
+            const { title, summary, content } = req.body;
+            const postDoc = await Post.create({
+                title,
+                summary,
+                content,
+                cover: `https://${params.Bucket}.s3.amazonaws.com/${params.Key}`, // Save S3 URL in the database
+                author: info.id,
+            });
+            res.json(postDoc);
         });
-        res.json(postDoc);
-    });
+    } catch (err) {
+        console.error("Error uploading file:", err);
+        res.status(500).json({
+            error: "Failed to upload file",
+            message: err.message,
+        });
+    }
 });
 
-app.put("/post", uploadMiddleware.single("file"), async (req, res) => {
-    let newPath = null;
-    if (req.file) {
-        const { originalname, path } = req.file;
-        const parts = originalname.split(".");
-        const ext = parts[parts.length - 1];
-        newPath = path + "." + ext;
-        fs.renameSync(path, newPath);
-    }
-
+// PUT /post endpoint to update a post
+app.put("/post/:id", upload.single("file"), async (req, res) => {
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
-        if (err) throw err;
-        const { id, title, summary, content } = req.body;
-        const postDoc = await Post.findById(id);
-        const isAuthor = postDoc.author.toString() === info.id.toString();
-        if (!isAuthor) {
-            return res.status(400).json("You are not the author");
+        if (err) {
+            return res.status(401).json({ error: "Unauthorized" });
         }
 
-        postDoc.title = title;
-        postDoc.summary = summary;
-        postDoc.content = content;
-        if (newPath) {
-            postDoc.cover = newPath;
+        const { id } = req.params;
+        const { title, summary, content } = req.body;
+        const postDoc = await Post.findById(id);
+
+        if (!postDoc) {
+            return res.status(404).json({ error: "Post not found" });
+        }
+
+        if (postDoc.author.toString() !== info.id.toString()) {
+            return res
+                .status(403)
+                .json({ error: "You are not the author of this post" });
+        }
+
+        if (req.file) {
+            const { originalname, buffer } = req.file;
+            const ext = originalname.split(".").pop();
+
+            // Set up S3 upload parameters
+            const params = {
+                Bucket: "bookofally-media",
+                Key: `${Date.now()}_${originalname}`,
+                Body: buffer,
+                ACL: "public-read",
+            };
+
+            try {
+                // Upload file to S3 bucket
+                const data = await s3Client.send(new PutObjectCommand(params));
+                const coverUrl = `https://bookofally-media.s3.amazonaws.com/${params.Key}`;
+
+                // Update post details with new cover URL
+                postDoc.title = title;
+                postDoc.summary = summary;
+                postDoc.content = content;
+                postDoc.cover = coverUrl;
+            } catch (err) {
+                console.error("Error uploading file:", err);
+                return res.status(500).json({ error: "Failed to upload file" });
+            }
+        } else {
+            // No new file uploaded, update other post details
+            postDoc.title = title;
+            postDoc.summary = summary;
+            postDoc.content = content;
         }
 
         await postDoc.save();
@@ -177,6 +227,3 @@ app.get("/post/:id", async (req, res) => {
 app.listen(4000, () => {
     console.log("Server is running on port 4000");
 });
-
-// m1KUtCLOMnzLEPlr
-// mongodb+srv://allyhaas:m1KUtCLOMnzLEPlr@cluster0.teklxhx.mongodb.net/

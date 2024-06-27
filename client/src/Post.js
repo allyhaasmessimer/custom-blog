@@ -10,11 +10,13 @@ export default function Post({
     createdAt,
     author,
 }) {
+    console.log(cover);
+
     return (
         <div className="post">
             <div className="image">
                 <Link to={`/post/${_id}`}>
-                    <img src={"http://localhost:4000/" + cover} alt="" />
+                    <img src={cover} alt={title} />
                 </Link>
             </div>
             <div className="texts">

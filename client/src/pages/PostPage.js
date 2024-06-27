@@ -11,7 +11,12 @@ export default function PostPage() {
 
     useEffect(() => {
         fetch(`http://localhost:4000/post/${id}`)
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch post ${id}`);
+                }
+                return response.json();
+            })
             .then((data) => {
                 setPostInfo(data);
             })
@@ -20,19 +25,23 @@ export default function PostPage() {
             });
     }, [id]);
 
-    if (!postInfo) return "";
-
     const handleDelete = async () => {
-        const response = await fetch(`http://localhost:4000/post/${id}`, {
-            method: "DELETE",
-            credentials: "include",
-        });
-        if (response.ok) {
-            setRedirect(true);
-        } else {
-            console.error("Failed to delete post");
+        try {
+            const response = await fetch(`http://localhost:4000/post/${id}`, {
+                method: "DELETE",
+                credentials: "include",
+            });
+            if (response.ok) {
+                setRedirect(true);
+            } else {
+                console.error("Failed to delete post");
+            }
+        } catch (error) {
+            console.error("Error deleting post:", error);
         }
     };
+
+    if (!postInfo) return null; // or loading indicator
 
     if (redirect) {
         return <Navigate to="/" />;
@@ -82,7 +91,7 @@ export default function PostPage() {
                 </div>
             )}
             <div className="image">
-                <img src={`http://localhost:4000/${postInfo.cover}`} alt="" />
+                <img src={postInfo.cover} alt="" />
             </div>
             <div
                 className="content"
