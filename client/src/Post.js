@@ -10,8 +10,6 @@ export default function Post({
     createdAt,
     author,
 }) {
-    console.log(cover);
-
     return (
         <div className="post">
             <div className="image">
