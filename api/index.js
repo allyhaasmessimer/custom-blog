@@ -159,7 +159,6 @@ app.put("/post/:id", upload.single("file"), async (req, res) => {
                 Bucket: "bookofally-media",
                 Key: `${Date.now()}_${originalname}`,
                 Body: buffer,
-                ACL: "public-read",
             };
 
             try {
