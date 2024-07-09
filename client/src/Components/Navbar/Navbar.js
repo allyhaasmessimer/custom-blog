@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Navbar.css";
 import { Link } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../UserContext";
-import typewriterIcon from "./icons8-typewriter-50.png";
+import typewriterIcon from "../../images/icons8-typewriter-50.png";
 
 export default function Navbar() {
     const { setUserInfo, userInfo } = useContext(UserContext);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
     useEffect(() => {
         fetch("http://localhost:4000/profile", {
             credentials: "include",
@@ -26,6 +27,11 @@ export default function Navbar() {
             setUserInfo(null);
         });
     }
+
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+    };
+
     const username = userInfo?.username;
 
     return (
@@ -34,7 +40,12 @@ export default function Navbar() {
                 <img src={typewriterIcon} alt="Typewriter Icon" />
                 WONDERING WORDS
             </a>
-            <nav className="navbar">
+            {/* <button className="hamburger" onClick={toggleMenu}>
+                <span className="bar"></span>
+                <span className="bar"></span>
+                <span className="bar"></span>
+            </button> */}
+            <nav className={`navbar ${isMenuOpen ? "active" : ""}`}>
                 {username ? (
                     <>
                         <Link to="/create">NEW POST</Link>
@@ -45,13 +56,12 @@ export default function Navbar() {
                 ) : (
                     <>
                         <Link to="/login">LOGIN</Link>
-                        {/* <Link to="/register">Register</Link> */}
                     </>
                 )}
-                <a href="/">HOME</a>
+                <a href="/home">HOME</a>
                 <Link to="/about">ABOUT</Link>
-                <a href="/">PORFOLIO</a>
-                <a href="/">SERVICES</a>
+                <a href="/">PORTFOLIO</a>
+                <a href="/">BLOG</a>
                 <a href="/">CONTACT</a>
             </nav>
         </header>

@@ -1,0 +1,89 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 78vh;
+    overflow: hidden;
+}
+
+.home_header {
+    text-align: right;
+    margin-bottom: 5px;
+}
+
+.home_header h1 {
+    font-weight: bold;
+    font-family: "Playfair Display", sans-serif;
+    font-size: 22px;
+}
+
+.home_header h2 {
+    font-weight: normal;
+    font-family: "Playfair Display", sans-serif;
+    font-size: 18px;
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden; /* Ensures images are confined within their container */
+}
+
+.image-wrapper {
+    flex: 1;
+    margin: 0 10px;
+    max-width: 33%; /* Ensures each image takes up one-third of the container */
+    overflow: hidden; /* Hides any overflow beyond the image wrapper */
+    position: relative; /* Allows positioning of child elements */
+}
+
+.image-wrapper img {
+    width: 100%; /* Ensures images span the width of their container */
+    height: auto; /* Maintains aspect ratio */
+    display: block; /* Removes default inline alignment */
+    transition: transform 0.3s ease; /* Adds a smooth transition effect */
+}
+
+.image-wrapper:hover img {
+    transform: scale(1.1); /* Scales the image on hover for a zoom effect */
+}
+
+/* Media Queries for responsive design */
+@media (max-width: 768px) {
+    .container {
+        align-items: flex-start;
+    }
+
+    .home_header {
+        text-align: left;
+        width: 100%;
+        margin-bottom: 20px; /* Add margin to separate from images */
+    }
+
+    .image-container {
+        flex-direction: column; /* Stacks images vertically */
+        align-items: center; /* Centers images */
+    }
+
+    .image-wrapper {
+        max-width: 100%; /* Ensures images take up full width */
+        margin: 10px 0; /* Adds margin between images */
+    }
+}
+
+@media (max-width: 480px) {
+    .home_header h1 {
+        font-size: 18px; /* Further adjusts font size for smaller screens */
+    }
+
+    .home_header h2 {
+        font-size: 16px; /* Further adjusts font size for smaller screens */
+    }
+
+    .image-wrapper {
+        max-width: 100%; /* Ensures each image takes up full width */
+        margin: 10px 0; /* Adds margin between images */
+    }
+}
