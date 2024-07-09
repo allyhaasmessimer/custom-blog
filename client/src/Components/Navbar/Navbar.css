@@ -1,0 +1,87 @@
+/* header {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-left: 10%;
+    margin-right: 10%;
+
+    margin-bottom: 50px;
+    align-items: center;
+    border-bottom: #161512 1px solid;
+}
+header a {
+    text-decoration: none;
+    color: inherit;
+}
+.nav-a {
+    display: flex;
+}
+header a.logo {
+    font-size: 5rem;
+    font-family: "Poppins";
+    letter-spacing: 2.5px;
+}
+
+header nav {
+    display: flex;
+    gap: 15px;
+} */
+.anton-sc-regular {
+    font-family: "Anton SC", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 0px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    color: #161512;
+    text-decoration: none;
+    border-bottom: #161512 1px solid;
+}
+
+.logo {
+    color: #161512;
+    font-size: 3rem;
+    font-family: "Anton SC", sans-serif;
+    letter-spacing: 2.5px;
+    align-items: center;
+}
+
+.logo img {
+    padding-right: 10px;
+    width: 60px;
+    height: auto;
+    max-width: 100%;
+    padding-bottom: 2px;
+}
+
+.navbar a {
+    position: relative;
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: 40px;
+    color: #161512;
+}
+
+.navbar a::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #161512;
+    transition: 0.3s;
+}
+
+.navbar a:hover::before {
+    width: 100%;
+}

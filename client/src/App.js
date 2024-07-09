@@ -1,6 +1,5 @@
 import "./App.css";
 // import Post from "./Post";
-// import Header from "./Header";
 import { Routes, Route } from "react-router-dom";
 import Layout from "./Layout";
 import IndexPage from "./pages/IndexPage";
@@ -11,6 +10,7 @@ import PostPage from "./pages/PostPage";
 import EditPost from "./pages/EditPost";
 import { UserContextProvider } from "./UserContext";
 import Post from "./Post";
+import AboutPage from "./pages/AboutPage";
 
 function App() {
     return (
@@ -24,6 +24,7 @@ function App() {
                     <Route path="/create" element={<CreatePost />} />
                     <Route path="/post/:id" element={<PostPage />} />
                     <Route path="/edit/:id" element={<EditPost />} />
+                    <Route path="/about" element={<AboutPage />} />
                 </Route>
             </Routes>{" "}
         </UserContextProvider>
