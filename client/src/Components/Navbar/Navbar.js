@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./Navbar.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../../UserContext";
 import typewriterIcon from "../../images/icons8-typewriter-50.png";
 
 export default function Navbar() {
     const { setUserInfo, userInfo } = useContext(UserContext);
+    const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
@@ -29,7 +30,11 @@ export default function Navbar() {
     }
 
     const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
+        setIsMenuOpen((prevIsMenuOpen) => !prevIsMenuOpen);
+    };
+
+    const closeMenu = () => {
+        setIsMenuOpen(false);
     };
 
     const username = userInfo?.username;
@@ -38,31 +43,47 @@ export default function Navbar() {
         <header className="header">
             <a href="/" className="logo">
                 <img src={typewriterIcon} alt="Typewriter Icon" />
-                WONDERING WORDS
+                <h4 className="site_title">WONDERING WORDS</h4>
             </a>
-            {/* <button className="hamburger" onClick={toggleMenu}>
+            <button className="hamburger" onClick={toggleMenu}>
                 <span className="bar"></span>
                 <span className="bar"></span>
                 <span className="bar"></span>
-            </button> */}
+            </button>
             <nav className={`navbar ${isMenuOpen ? "active" : ""}`}>
-                {username ? (
-                    <>
-                        <Link to="/create">NEW POST</Link>
-                        <a href="#" onClick={logout}>
-                            LOGOUT
-                        </a>
-                    </>
-                ) : (
-                    <>
-                        <Link to="/login">LOGIN</Link>
-                    </>
-                )}
-                <a href="/home">HOME</a>
-                <Link to="/about">ABOUT</Link>
-                <a href="/">PORTFOLIO</a>
-                <a href="/">BLOG</a>
-                <a href="/">CONTACT</a>
+                <div className="nav-items">
+                    {username ? (
+                        <>
+                            <Link to="/create" onClick={closeMenu}>
+                                NEW POST
+                            </Link>
+                            <a href="#" onClick={logout}>
+                                LOGOUT
+                            </a>
+                        </>
+                    ) : (
+                        <>
+                            <Link to="/login" onClick={closeMenu}>
+                                LOGIN
+                            </Link>
+                        </>
+                    )}
+                    <Link to="/home" onClick={closeMenu}>
+                        HOME
+                    </Link>
+                    <Link to="/about" onClick={closeMenu}>
+                        ABOUT
+                    </Link>
+                    <Link to="/portfolio" onClick={closeMenu}>
+                        PORTFOLIO
+                    </Link>
+                    <Link to="/" onClick={closeMenu}>
+                        BLOG
+                    </Link>
+                    <Link to="/contact" onClick={closeMenu}>
+                        CONTACT
+                    </Link>
+                </div>
             </nav>
         </header>
     );

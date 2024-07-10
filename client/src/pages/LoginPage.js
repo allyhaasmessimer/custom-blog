@@ -42,7 +42,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(ev) => setPassword(ev.target.value)}
             />
-            <button>Login</button>
+            <button className="fullwidth">Login</button>
         </form>
     );
 }

@@ -71,7 +71,11 @@ export default function PostPage() {
                         </svg>
                         Edit this
                     </Link>
-                    <button onClick={handleDelete} className="edit-btn">
+                    <button
+                        className="fullwidth"
+                        onClick={handleDelete}
+                        className="edit-btn"
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"

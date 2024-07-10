@@ -52,7 +52,9 @@ export default function CreatePost() {
                 onChange={(ev) => setFiles(ev.target.files)}
             />
             <Editor value={content} onChange={setContent} />
-            <button style={{ marginTop: "5px" }}>Create post</button>
+            <button className="fullwidth" style={{ marginTop: "5px" }}>
+                Create post
+            </button>
         </form>
     );
 }
