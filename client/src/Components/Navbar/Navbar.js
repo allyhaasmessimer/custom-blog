@@ -43,7 +43,7 @@ export default function Navbar() {
         <header className="header">
             <a href="/" className="logo">
                 <img src={typewriterIcon} alt="Typewriter Icon" />
-                <h4 className="site_title">WONDERING WORDS</h4>
+                <h4 className="site_title">WANDERING WORDS</h4>
             </a>
             <button className="hamburger" onClick={toggleMenu}>
                 <span className="bar"></span>
@@ -63,9 +63,9 @@ export default function Navbar() {
                         </>
                     ) : (
                         <>
-                            <Link to="/login" onClick={closeMenu}>
+                            {/* <Link to="/login" onClick={closeMenu}>
                                 LOGIN
-                            </Link>
+                            </Link> */}
                         </>
                     )}
                     <Link to="/home" onClick={closeMenu}>

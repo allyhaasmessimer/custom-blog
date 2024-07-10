@@ -141,9 +141,9 @@ div.post-page button.edit-btn {
     gap: 5px;
     border: none;
     cursor: pointer;
-    font-size: inherit; /* Ensures font size is consistent */
-    font-family: inherit; /* Ensures font family is consistent */
-    text-align: center; /* Centers text within the button */
+    font-size: inherit;
+    font-family: inherit;
+    text-align: center;
 }
 
 div.post-page a.edit-btn:hover,
