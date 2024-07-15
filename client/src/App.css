@@ -82,13 +82,19 @@ form.register h1 {
     text-align: center;
 }
 .post_page_box {
-    max-width: 800px; /* Adjust the width as needed */
-    margin: 0 auto; /* This centers the div horizontally */
-    /* text-align: left;  */
-    /* border-bottom: #161512 1px solid; */
-
+    max-width: 800px;
+    margin: 0 auto;
     border: 1px solid #161512;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: adds a subtle shadow for aesthetics */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+div.post-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding-bottom: 100px;
+    /* padding: 0; */
+    /* border: 1px solid #161512; */
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
 }
 
 div.post-page div.image {
@@ -101,6 +107,7 @@ div.post-page div.image img {
     object-fit: cover;
     object-position: center center;
     width: 100%;
+    padding-bottom: 20px;
 }
 
 div.post-page a {
@@ -127,8 +134,9 @@ div.post-page div.author {
     font-weight: bold;
 }
 
-div.post-page div.content p {
+div.post-page div.content_paragraph p {
     line-height: 1.6rem;
+    text-indent: 2em;
 }
 
 div.edit-row {

@@ -98,7 +98,7 @@ export default function PostPage() {
                 <img src={postInfo.cover} alt="" />
             </div>
             <div
-                className="content"
+                className="content_paragraph"
                 dangerouslySetInnerHTML={{ __html: postInfo.content }}
             />
         </div>
